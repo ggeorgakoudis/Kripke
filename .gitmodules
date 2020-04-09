@@ -2,9 +2,9 @@
 	path = blt
 	url = https://github.com/LLNL/blt.git
 [submodule "tpl/raja"]
-	path = tpl/raja
-	url = https://github.com/LLNL/RAJA.git
-	branch = develop
+    path = tpl/raja
+    url = https://github.com/ggeorgakoudis/raja.git
+    branch = mpi-opencv
 [submodule "tpl/chai"]
 	path = tpl/chai
 	url = https://github.com/LLNL/CHAI.git

@@ -101,6 +101,14 @@ if(ENABLE_OPENMP)
   list(APPEND KRIPKE_DEPENDS openmp)
 
   set(KRIPKE_ARCH "OpenMP")
+
+  option(ENABLE_APOLLO "Enable Apollo execution" Off)
+  if(ENABLE_APOLLO)
+      set(KRIPKE_USE_APOLLO 1)
+      message("USE APOLLO!")
+  else()
+      message("DONT USE APOLLO!")
+  endif()
   
 endif()
 

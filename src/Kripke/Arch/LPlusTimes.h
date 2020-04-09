@@ -121,6 +121,93 @@ struct Policy_LPlusTimes<ArchLayoutT<ArchT_Sequential, LayoutT_ZGD>> {
 
 #ifdef KRIPKE_USE_OPENMP
 
+#ifdef KRIPKE_USE_APOLLO
+
+template<>
+struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,2>, // Direction, Group
+        For<1, loop_exec, // Moment
+          For<3, loop_exec, // Zone
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_DZG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,3>, // Direction, Zone
+        For<1, loop_exec, // Moment
+          For<2, loop_exec, // Group
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_GDZ>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<2,0>, // Group, Direciton
+        For<1, loop_exec, // Moment
+          For<3, loop_exec, // Zone
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_GZD>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<2,3,0>, // Group, Zone, Direciton
+        For<1, loop_exec, // Moment
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_ZDG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<3,0>, // Zone, Direction
+        For<1, loop_exec, // Moment
+          For<2, loop_exec, // Group
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+
+
+template<>
+struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<3,2,0>, // Zone, Group, Direction
+        For<1, loop_exec, // Moment
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+#else // not KRIPKE_USE_APOLLO
+
 template<>
 struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
   using ExecPolicy =
@@ -203,6 +290,8 @@ struct Policy_LPlusTimes<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>> {
       >
     >;
 };
+#endif // KRIPKE_USE_APOLLO
+
 #endif // KRIPKE_USE_OPENMP
 
 

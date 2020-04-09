@@ -22,6 +22,13 @@
 
 #ifdef KRIPKE_USE_OPENMP
 #include <omp.h>
+#pragma message "Enable OpenMP"
+#ifdef KRIPKE_USE_APOLLO
+#pragma message "Enable apollo"
+#include "apollo/Apollo.h"
+#else
+#pragma message "Disabled apollo"
+#endif
 #endif
 
 #ifdef KRIPKE_USE_CALIPER
@@ -237,6 +244,12 @@ int main(int argc, char **argv) {
 
 #ifdef KRIPKE_USE_OPENMP
     printf("  OpenMP Enabled:         Yes\n");
+#ifdef KRIPKE_USE_APOLLO
+    printf("  Apollo Enabled:         Yes\n");
+#else
+    printf("  Apollo Enabled:         No\n");
+#endif
+
 #else
     printf("  OpenMP Enabled:         No\n");
 #endif

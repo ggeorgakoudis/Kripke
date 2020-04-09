@@ -105,7 +105,7 @@ namespace Arch {
   using RAJA::statement::For;
   using RAJA::statement::Hyperplane;
   using RAJA::statement::Lambda;
-  using RAJA::statement::SetShmemWindow;
+  //using RAJA::statement::SetShmemWindow;
   using RAJA::statement::Tile;
   using RAJA::statement::tile_fixed;
 
@@ -113,6 +113,10 @@ namespace Arch {
   using RAJA::omp_parallel_collapse_exec;
   using RAJA::omp_parallel_for_exec;
   using RAJA::omp_reduce;
+#ifdef KRIPKE_USE_APOLLO
+  using RAJA::apollo_exec;
+  using RAJA::apollo_collapse_exec;
+#endif
 #endif
 
 #ifdef KRIPKE_USE_CUDA

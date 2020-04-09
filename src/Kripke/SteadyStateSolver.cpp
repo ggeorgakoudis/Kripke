@@ -39,6 +39,10 @@ int Kripke::SteadyStateSolver (Kripke::Core::DataStore &data_store, size_t max_i
   Kripke::Kernel::kConst(data_store.getVariable<Kripke::Field_Flux>("psi"), 0.0);
 
 
+#ifdef KRIPKE_USE_APOLLO
+  Apollo *apollo = Apollo::instance();
+#endif
+
   // Loop over iterations
   double part_last = 0.0;
   for(size_t iter = 0;iter < max_iter;++ iter){
@@ -104,7 +108,9 @@ int Kripke::SteadyStateSolver (Kripke::Core::DataStore &data_store, size_t max_i
     part_last = part;
 
 
-
+#ifdef KRIPKE_USE_APOLLO
+    apollo->flushAllRegionMeasurements(iter);
+#endif
   }
 
   if(comm.rank() == 0){

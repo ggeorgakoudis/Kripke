@@ -135,6 +135,112 @@ struct Policy_SweepSubdomains<ArchLayoutT<ArchT_Sequential, LayoutT_ZGD>> {
 
 #ifdef KRIPKE_USE_OPENMP
 
+#ifdef KRIPKE_USE_APOLLO
+
+template<>
+struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
+
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,1>, // direction, group
+        For<2, loop_exec, // k
+          For<3, loop_exec, // j
+            For<4, loop_exec, // i
+              Lambda<0>
+            >
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_DZG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      For<0, apollo_exec,  // direction
+        For<2, loop_exec, // k
+          For<3, loop_exec, // j
+            For<4, loop_exec, // i
+              For<1, loop_exec, // group
+                Lambda<0>
+              >
+            >
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_GDZ>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<1,0>, // group, direction
+        For<2, loop_exec, // k
+          For<3, loop_exec, // j
+            For<4, loop_exec, // i
+              Lambda<0>
+            >
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_GZD>> {
+  using ExecPolicy =
+    KernelPolicy<
+      For<1, apollo_exec, // group
+        For<2, loop_exec, // k
+          For<3, loop_exec, // j
+            For<4, loop_exec, // i
+              For<0, loop_exec,  // direction
+                Lambda<0>
+              >
+            >
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_ZDG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Hyperplane<2, seq_exec, ArgList<3,4>, apollo_collapse_exec,
+        For<0, loop_exec,  // direction
+          For<1, loop_exec, // group
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Hyperplane<2, seq_exec, ArgList<3,4>, apollo_collapse_exec,
+        For<1, loop_exec, // group
+          For<0, loop_exec,  // direction
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+#else // not KRIPKE_USE_APOLLO
 
 template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
@@ -238,6 +344,8 @@ struct Policy_SweepSubdomains<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>> {
       >
     >;
 };
+
+#endif // KRIPKE_USE_APOLLO
 
 #endif // KRIPKE_USE_OPENMP
 

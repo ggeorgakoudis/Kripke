@@ -118,6 +118,95 @@ struct Policy_Population<ArchLayoutT<ArchT_Sequential, LayoutT_ZGD>>{
 
 #ifdef KRIPKE_USE_OPENMP
 
+#ifdef KRIPKE_USE_APOLLO
+
+template<>
+struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>>{
+  using ReducePolicy = omp_reduce;
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,1>, // Direction Group
+        For<2, loop_exec, // Zone
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_DZG>>{
+  using ReducePolicy = omp_reduce;
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,2>, // Direction Zone
+        For<1, loop_exec, // Group
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_GDZ>>{
+  using ReducePolicy = omp_reduce;
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<1,0>, // Group Direction
+        For<2, loop_exec, // Zone
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_GZD>>{
+  using ReducePolicy = omp_reduce;
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<1,2>, // Group Zone
+        For<0, loop_exec, // Direction
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_ZDG>>{
+  using ReducePolicy = omp_reduce;
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<2,0>, // Zone Direction
+        For<1, loop_exec, // Group
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>>{
+  using ReducePolicy = omp_reduce;
+
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<2,1>, // Zone Group
+        For<0, loop_exec, // Direction
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+#else // not KRIPKE_USE_APOLLO
+
 template<>
 struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>>{
   using ReducePolicy = omp_reduce;
@@ -203,6 +292,7 @@ struct Policy_Population<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>>{
     >;
 };
 
+#endif // KRIPKE_USE_APOLLO
 
 #endif // KRIPKE_USE_OPENMP
 

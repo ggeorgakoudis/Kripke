@@ -57,6 +57,31 @@ struct Policy_Source<ArchLayoutT<ArchT_Sequential, LayoutT_DZG>> {
 
 
 #ifdef KRIPKE_USE_OPENMP
+
+#ifdef KRIPKE_USE_APOLLO
+
+template<>
+struct Policy_Source<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,1>, // Group, MixElem
+        Lambda<0>
+      >
+    >;
+};
+
+template<>
+struct Policy_Source<ArchLayoutT<ArchT_OpenMP, LayoutT_DZG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<1,0>, // MixElem, Group
+        Lambda<0>
+      >
+    >;
+};
+
+#else // not KRIPKE_USE_APOLLO
+
 template<>
 struct Policy_Source<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
   using ExecPolicy =
@@ -76,6 +101,9 @@ struct Policy_Source<ArchLayoutT<ArchT_OpenMP, LayoutT_DZG>> {
       >
     >;
 };
+
+#endif // KRIPKE_USE_APOLLO
+
 #endif // KRIPKE_USE_OPENMP
 
 

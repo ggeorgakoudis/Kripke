@@ -120,6 +120,95 @@ struct Policy_Scattering<ArchLayoutT<ArchT_Sequential, LayoutT_ZGD>> {
 
 
 #ifdef KRIPKE_USE_OPENMP
+
+#ifdef KRIPKE_USE_APOLLO
+
+template<>
+struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,1>, // Moment, DstGrp
+        For<2, loop_exec, // SrcGrp
+          For<3, loop_exec, // Zone
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+template<>
+struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_DZG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<0,3,1>, // Moment, Zone, DstGrp
+        For<2, loop_exec, // SrcGrp
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_GDZ>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<1,0>, // DstGrp, Moment
+        For<2, loop_exec, // SrcGrp
+          For<3, loop_exec, // Zone
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_GZD>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<1,3>, // DstGrp, Zone
+        For<2, loop_exec, // SrcGrp
+          For<0, loop_exec, // Moment
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_ZDG>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<3,0,1>, // Zone, Moment, DstGrp
+        For<2, loop_exec, // SrcGrp
+          Lambda<0>
+        >
+      >
+    >;
+};
+
+
+template<>
+struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>> {
+  using ExecPolicy =
+    KernelPolicy<
+      Collapse<apollo_collapse_exec, ArgList<3,1>, // Zone, DstGrp
+        For<2, loop_exec, // SrcGrp
+          For<0, loop_exec, // Moment
+            Lambda<0>
+          >
+        >
+      >
+    >;
+};
+
+#else // not KRIPKE_USE_APOLLO
+
 template<>
 struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_DGZ>> {
   using ExecPolicy =
@@ -203,6 +292,9 @@ struct Policy_Scattering<ArchLayoutT<ArchT_OpenMP, LayoutT_ZGD>> {
       >
     >;
 };
+
+#endif // KRIPKE_USE_APOLLO
+
 #endif // KRIPKE_USE_OPENMP
 
 
